@@ -60,6 +60,7 @@ public class SintacticoSemantico {
         preAnalisis = cmp.be.preAnalisis.complex;
 
         // * * *   INVOCAR AQUI EL PROCEDURE DEL SIMBOLO INICIAL   * * *
+        programa();
     }
 
     //--------------------------------------------------------------------------
@@ -116,7 +117,72 @@ public class SintacticoSemantico {
     //  *  *   *   *    PEGAR AQUI EL CODIGO DE LOS PROCEDURES  *  *  *  *
     //--------------------------------------------------------------------------
 
-    //------------------------------------------------------
+    //-----------------------------------------------------------------------------------------------------
+    //PROCEDURES DE ALEJANDRO
+    private void programa() {
+        if (preAnalisis.equals("dim") || preAnalisis.equals("function")
+                || preAnalisis.equals("id") || preAnalisis.equals("end")) {
+            declaraciones();
+            declaraciones_subprogramas()
+            
+        } else {
+            error("[programa] Se esperaba el inicio de un programa con 'dim', 'function', 'id' o 'end'"
+                    + " Línea: " + cmp.be.preAnalisis.numLinea);
+        }
+    }
+
+    private void declaraciones() {
+        if (preAnalisis.equals("dim")) {
+            //declaraciones -> dim lista_declaraciones declaraciones empty
+            emparejar("dim");
+            lista_declaraciones();
+            declaraciones();
+        } else {
+            //declaraciones -> empty
+        }
+    }
+
+    private void lista_declaraciones() {
+        if (preAnalisis.equals("id")) {
+            //lista_declaraciones -> id as tipo lista_declaraciones'
+            emparejar("id");
+            emparejar("as");
+            tipo();
+            lista_declaraciones_prima();
+        } else {
+            error("[lista_declaraciones] Se esperaba 'id', 'as', tipo de dato, etc."
+                    + " Línea: " + cmp.be.preAnalisis.numLinea);
+        }
+    }
+
+    private void lista_declaraciones_prima() {
+        if (preAnalisis.equals(",")) {
+            //lista_declaraciones' -> , lista_declaraciones empty
+            emparejar(",");
+            lista_declaraciones();
+        } else {
+            //lista_declaraciones' -> empty
+        }
+    }
+
+    private void tipo() {
+        if (preAnalisis.equals("integer")) {
+            //tipo -> integer
+            emparejar("integer");
+        } else if (preAnalisis.equals("single")) {
+            //tipo -> single
+            emparejar("single");
+        } else if (preAnalisis.equals("string")) {
+            //tipo -> string
+            emparejar("string");
+        } else {
+            error("[tipo] Se esperaba un tipo de dato 'integer', 'single', 'string', etc. "
+                    + " Línea: " + cmp.be.preAnalisis.numLinea);
+        }
+    }
+
+//-----------------------------------------------------------------------------------------------------------//    
+
     // PROCEDURES DE ALONDRA (PROCEDURES DE 16-22)
     
     private void condicion(){
