@@ -115,9 +115,107 @@ public class SintacticoSemantico {
     //--------------------------------------------------------------------------
     //  *  *   *   *    PEGAR AQUI EL CODIGO DE LOS PROCEDURES  *  *  *  *
     //--------------------------------------------------------------------------
-//DAMARIS
 
+    //------------------------------------------------------
+    // PROCEDURES DE ALONDRA
+    
+    private void condicion(){
+        if(preAnalisis.equals("literal")){
+            emparejar("literal");
+        }
+        else if(preAnalisis.equals("id")){
+            emparejar("id");
+            factorB();
+        }else if(preAnalisis.equals("num")){
+            emparejar("id");
+        }else if(preAnalisis.equals("num.num")){
+            emparejar("num.num");
+        }else if(preAnalisis.equals("(")){
+            emparejar("(");
+            expresion();
+            emparejar(")");
+        }
+    }
+    
+    private void expresion(){
+        if(preAnalisis.equals("literal")){
+            emparejar("literal");
+        }
+        else if(preAnalisis.equals("id")){
+            emparejar("id");
+            factorB();
+        }else if(preAnalisis.equals("num")){
+            emparejar("num");
+        }else if(preAnalisis.equals("num.num")){
+            emparejar("num.num");
+        }else if(preAnalisis.equals("(")){
+            emparejar("(");
+            expresion();
+            emparejar(")");
+        }
+    }
+    
+    private void expresionB(){
+        if(preAnalisis.equals("opsuma")){
+            emparejar("opsuma");
+            termino();
+            expresionB();
+        }else{
+            //empty
+        }
+    }
+    
+    private void termino(){
+        if(preAnalisis.equals("id")){
+            emparejar("id");
+            factorB();
+        }else if(preAnalisis.equals("num")){
+            emparejar("num");
+        }else if(preAnalisis.equals("num.num")){
+            emparejar("num.num");
+        }else if(preAnalisis.equals("(")){
+            emparejar("(");
+            expresion();
+            emparejar(")");
+        }
+    }
+    
+    private void terminoB(){
+        if(preAnalisis.equals("opmult")){
+            emparejar("opmult");
+            factor();
+            terminoB();
+        }else{
+            //empty
+        }
+    }
+    
+    private void factor(){
+        if(preAnalisis.equals("id")){
+            emparejar("id");
+            factorB();
+        }else if(preAnalisis.equals("num")){
+            emparejar("num");
+        }else if(preAnalisis.equals("num.num")){
+            emparejar("num.num");
+        }else if(preAnalisis.equals("(")){
+            emparejar("(");
+            expresion();
+            emparejar(")");
+        }
+    }
 
+    private void factorB(){
+        if(preAnalisis.equals("(")){
+            emparejar("(");
+            lista_expresiones();
+            emparejar(")");
+        }else{
+            //empty
+        }
+    }
+    
+    //------------------------------------------------------
 }
 //------------------------------------------------------------------------------
 //::
