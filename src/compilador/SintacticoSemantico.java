@@ -117,7 +117,7 @@ public class SintacticoSemantico {
     //--------------------------------------------------------------------------
 
     //------------------------------------------------------
-    // PROCEDURES DE ALONDRA
+    // PROCEDURES DE ALONDRA (PROCEDURES DE 16-22)
     
     private void condicion(){
         if(preAnalisis.equals("literal")){
