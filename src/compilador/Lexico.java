@@ -220,19 +220,43 @@ public class Lexico {
    private Boolean EsPalabraReservada(String lex)
    {      
        String palres[] = {
-                        "entero",
-                        "real",
-                        "caracter",
-                        "inicio",
-                        "fin",
+                        "end",
+                        "dim",
+                        "empty",
+                        "id",
+                        "as",
+                        "‘",
+                        "’",
+                        "integer",
+                        "single",
+                        "string",
+                        "function",
+                        "sub",
+                        "(",
+                        ")",
+                        "opasig",
+                        "call",
+                        "if",
+                        "then",
+                        "else",
+                        "loop",
+                        "do",
+                        "while",
+                        "oprel",
+                        "literal",
+                        "opsuma",
+                        "opmult",
+                        "num",
+                        "num.num"
                          };
+       
        for (int i = 0; i < palres.length; i++) {
            if (lex.equals ( palres[i] ) ) {       
                return true; 
            }
        }
        return false;
-   }    
+   }  
   
     //--------------------------------------------------------------------------
 	// Toma los tokens y los pasa a la tabla de simbolos y buffer de entrada
