@@ -29,7 +29,8 @@
  *:                                 cadenas :=, :, = y
  *:                                 literales entre comillas sencillas.
  *: 14/FEB/2025 AletsMarts          -Se agregó la lista de palabras reservadas del
- *:                                  lenguaje Simple.
+ *:                                  lenguaje Simple.¨
+ *: 20/FEB/2025 AletsMarts          -Implementación de Git
  *:-----------------------------------------------------------------------------
  */
 
