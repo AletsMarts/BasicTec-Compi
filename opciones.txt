@@ -1,0 +1,7 @@
+Brillo     = 0 
+Fondo      = false 
+Idioma     = 0 
+Informar   = false 
+Solotexto  = true 
+Todo       = false 
+Contraste  = 0 
