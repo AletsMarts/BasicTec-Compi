@@ -60,7 +60,6 @@ public class SintacticoSemantico {
         preAnalisis = cmp.be.preAnalisis.complex;
 
         // * * *   INVOCAR AQUI EL PROCEDURE DEL SIMBOLO INICIAL   * * *
-        P();
     }
 
     //--------------------------------------------------------------------------
@@ -116,91 +115,6 @@ public class SintacticoSemantico {
     //--------------------------------------------------------------------------
     //  *  *   *   *    PEGAR AQUI EL CODIGO DE LOS PROCEDURES  *  *  *  *
     //--------------------------------------------------------------------------
-    
-    private void P() {
-        if (preAnalisis.equals("id")
-                || (preAnalisis.equals("inicio"))) {
-            //P -> V C
-            V();
-            C();
-        } else {
-            error("[P] El programa debe iniciar con declaración de variable "
-                    + "o palabra reservada inicio"
-                    + " Línea: "
-                    + cmp.be.preAnalisis.numLinea);
-        }
-    }
-
-    private void V() {
-        if (preAnalisis.equals("id")) {
-            //V -> id : T V
-            emparejar("id");
-            emparejar(":");
-            T();
-            V();
-        } else {
-            //V -> empty
-        }
-    }
-
-    private void T() {
-        if (preAnalisis.equals("entero")) {
-            //T -> entero
-            emparejar("entero");
-        } else if (preAnalisis.equals("real")) {
-            //T -> real
-            emparejar("real");
-        } else if (preAnalisis.equals("caracter")) {
-            //T -> caracter
-            emparejar("caracter");
-        } else {
-            error("[T] Se esperaba un tipo de dato"
-                    +  " Línea: " + 
-                    cmp.be.preAnalisis.numLinea);
-        }
-
-    }
-    
-    private void C() {
-        if (preAnalisis.equals("inicio")) {
-            emparejar("inicio");
-            S();
-            emparejar("fin");
-
-        } else {
-            error("[C] Se esperaba 'inicio' o 'fin'" 
-                    + " Línea: "
-                    + cmp.be.preAnalisis.numLinea);
-        }
-    }
-
-    private void S() {
-        if (preAnalisis.equals("id")) {
-            // S -> id opasig E S
-            emparejar("id");
-            emparejar("opasig");
-            E();
-            S();
-        } else {
-            //Empty
-        }
-
-    }
-
-    private void E() {
-        if (preAnalisis.equals("id")){
-            emparejar("id");
-        } else if (preAnalisis.equals("num")){
-            emparejar("num");
-        } else if (preAnalisis.equals("num.num")){
-            emparejar("num.num");
-        } else {
-            error("[E] Se esperaba id, num o num.num" + 
-                    " Línea: " +
-                    cmp.be.preAnalisis.numLinea);
-        }
-    }
-
 
 
 
