@@ -280,6 +280,105 @@ public class SintacticoSemantico {
             //empty
         }
     }
+
+//-------------------------------------------------------------------------------------------------------------------------------
+//:::::::::PROCEDURES DAMARIS :::::::::
+   private void declaraciones_subprogramas(){
+       
+       if(preAnalisis.equals("function")){
+        //declaraciones_subprogramas -> declaracion_subprograma declaraciones_subprogramas
+       
+        declaracion_subprograma ( );
+        declaraciones_subprogramas ( );
+        
+       }else{
+       
+           //declaraciones_subprogramas -> empty
+        
+       }
+    }
+    
+    private void declaracion_subprograma(){
+      
+        if(preAnalisis == "function"){ //|| preAnalisis=="sub"){
+            //declaracion_subprograma -> declaracion_funcion declaracion_subrutina
+        
+            declaracion_funcion();
+            emparejar("function");
+        
+        }else{
+            
+            if(preAnalisis =="sub"){
+            
+                declaracion_subrutina();
+                emparejar("sub");
+            
+            }else{
+            
+                //ERROR
+                error("[declaracion_subprograma] Se esperaba 'function' o 'sub' "+"Linea: "+cmp.be.preAnalisis.numLinea);
+            
+            }
+        }
+ }
+
+    private void declaracion_funcion(){
+       
+        if(preAnalisis=="function"){
+            //declaracion_funcion -> function id argumentos as tipo proposiciones_optativas
+        
+            emparejar("function");
+            emparejar("id");
+            argumentos();
+            emparejar("as");
+            tipo();
+            proposiciones_optativas();
+            
+        }else{
+            
+                //ERROR
+                error("[declaracion_funcion] Se esperaba 'function'"+"Linea: "+cmp.be.preAnalisis.numLinea);
+     
+        }
+    }
+    
+    private void declaracion_subrutina(){
+    
+        if(preAnalisis =="sub"){
+            //declaracion_subrutina -> sub id argumentos proposiciones_optativas end sub
+        
+            emparejar("sub");
+            emparejar("id");
+            argumentos();
+            proposiciones_optativas();
+            emparejar("end");
+            emparejar("sub");
+            
+        }else{
+            
+            //ERROR
+            error("[declaracion_subrutina] Se esperaba 'sub' "+"Linea: "+cmp.be.preAnalisis.numLinea);
+            
+        }
+    }
+    
+    private void argumentos(){
+        
+        if(preAnalisis =="("){
+            //argumentos -> (lista_declaraciones)
+        
+            emparejar("(");
+            lista_declaraciones();
+            emparejar(")");
+          
+        }else{
+        
+            //argumentos -> empty
+        
+        }
+        
+    }
+//-------------------------------------------------------------------------------------------------------------------------------
     
     //------------------------------------------------------
 }
