@@ -354,6 +354,8 @@ public class SintacticoSemantico {
             //Error de produccion
             error("[expresion] Expresion no valida " + "Literal: " + cmp.be.preAnalisis.numLinea);
         }
+        
+        
     }
     
     private void expresionB(){
