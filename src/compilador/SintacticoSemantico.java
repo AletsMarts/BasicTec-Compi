@@ -123,7 +123,7 @@ public class SintacticoSemantico {
         if (preAnalisis.equals("dim") || preAnalisis.equals("function")
                 || preAnalisis.equals("id") || preAnalisis.equals("end")) {
             declaraciones();
-            declaraciones_subprogramas()
+            declaraciones_subprogramas();
             
         } else {
             error("[programa] Se esperaba el inicio de un programa con 'dim', 'function', 'id' o 'end'"
@@ -181,202 +181,245 @@ public class SintacticoSemantico {
         }
     }
 
-//-----------------------------------------------------------------------------------------------------------//    
-
-    // PROCEDURES DE ALONDRA (PROCEDURES DE 16-22)
-    
-    private void condicion(){
-        if(preAnalisis.equals("literal")){
-            emparejar("literal");
-        }
-        else if(preAnalisis.equals("id")){
-            emparejar("id");
-            factorB();
-        }else if(preAnalisis.equals("num")){
-            emparejar("id");
-        }else if(preAnalisis.equals("num.num")){
-            emparejar("num.num");
-        }else if(preAnalisis.equals("(")){
-            emparejar("(");
-            expresion();
-            emparejar(")");
-        }
-    }
-    
-    private void expresion(){
-        if(preAnalisis.equals("literal")){
-            emparejar("literal");
-        }
-        else if(preAnalisis.equals("id")){
-            emparejar("id");
-            factorB();
-        }else if(preAnalisis.equals("num")){
-            emparejar("num");
-        }else if(preAnalisis.equals("num.num")){
-            emparejar("num.num");
-        }else if(preAnalisis.equals("(")){
-            emparejar("(");
-            expresion();
-            emparejar(")");
-        }
-    }
-    
-    private void expresionB(){
-        if(preAnalisis.equals("opsuma")){
-            emparejar("opsuma");
-            termino();
-            expresionB();
-        }else{
-            //empty
-        }
-    }
-    
-    private void termino(){
-        if(preAnalisis.equals("id")){
-            emparejar("id");
-            factorB();
-        }else if(preAnalisis.equals("num")){
-            emparejar("num");
-        }else if(preAnalisis.equals("num.num")){
-            emparejar("num.num");
-        }else if(preAnalisis.equals("(")){
-            emparejar("(");
-            expresion();
-            emparejar(")");
-        }
-    }
-    
-    private void terminoB(){
-        if(preAnalisis.equals("opmult")){
-            emparejar("opmult");
-            factor();
-            terminoB();
-        }else{
-            //empty
-        }
-    }
-    
-    private void factor(){
-        if(preAnalisis.equals("id")){
-            emparejar("id");
-            factorB();
-        }else if(preAnalisis.equals("num")){
-            emparejar("num");
-        }else if(preAnalisis.equals("num.num")){
-            emparejar("num.num");
-        }else if(preAnalisis.equals("(")){
-            emparejar("(");
-            expresion();
-            emparejar(")");
-        }
-    }
-
-    private void factorB(){
-        if(preAnalisis.equals("(")){
-            emparejar("(");
-            lista_expresiones();
-            emparejar(")");
-        }else{
-            //empty
-        }
-    }
-
 //-------------------------------------------------------------------------------------------------------------------------------
 //:::::::::PROCEDURES DAMARIS :::::::::
    private void declaraciones_subprogramas(){
-       
        if(preAnalisis.equals("function")){
         //declaraciones_subprogramas -> declaracion_subprograma declaraciones_subprogramas
-       
-        declaracion_subprograma ( );
-        declaraciones_subprogramas ( );
+        
+        declaracion_subprograma();
+        declaraciones_subprogramas();
         
        }else{
-       
            //declaraciones_subprogramas -> empty
-        
        }
     }
     
     private void declaracion_subprograma(){
       
-        if(preAnalisis == "function"){ //|| preAnalisis=="sub"){
+        if(preAnalisis.equals("function")){ //|| preAnalisis=="sub"){
             //declaracion_subprograma -> declaracion_funcion declaracion_subrutina
-        
             declaracion_funcion();
-            emparejar("function");
-        
+        }else if(preAnalisis.equals("sub")){
+            declaracion_subrutina();
         }else{
-            
-            if(preAnalisis =="sub"){
-            
-                declaracion_subrutina();
-                emparejar("sub");
-            
-            }else{
-            
-                //ERROR
-                error("[declaracion_subprograma] Se esperaba 'function' o 'sub' "+"Linea: "+cmp.be.preAnalisis.numLinea);
-            
-            }
+            error("[declaracion_subprograma] Funcion o Subrutina mal declarada o incorrecta " + "Linea: " + cmp.be.preAnalisis.numLinea);
         }
  }
 
     private void declaracion_funcion(){
-       
-        if(preAnalisis=="function"){
+        if(preAnalisis.equals("function")){
             //declaracion_funcion -> function id argumentos as tipo proposiciones_optativas
-        
             emparejar("function");
             emparejar("id");
             argumentos();
             emparejar("as");
             tipo();
             proposiciones_optativas();
-            
         }else{
-            
-                //ERROR
-                error("[declaracion_funcion] Se esperaba 'function'"+"Linea: "+cmp.be.preAnalisis.numLinea);
-     
+            //Error de produccion
+            error("[declaracion_funcion] Se esperaba 'function'" + "Linea: " + cmp.be.preAnalisis.numLinea);
         }
     }
     
     private void declaracion_subrutina(){
     
-        if(preAnalisis =="sub"){
+        if(preAnalisis.equals("sub")){
             //declaracion_subrutina -> sub id argumentos proposiciones_optativas end sub
-        
             emparejar("sub");
             emparejar("id");
             argumentos();
             proposiciones_optativas();
             emparejar("end");
             emparejar("sub");
-            
         }else{
-            
-            //ERROR
-            error("[declaracion_subrutina] Se esperaba 'sub' "+"Linea: "+cmp.be.preAnalisis.numLinea);
+            //ERROR de produccion
+            error("[declaracion_subrutina] Se esperaba 'sub' " + "Linea: " + cmp.be.preAnalisis.numLinea);
             
         }
     }
     
     private void argumentos(){
-        
         if(preAnalisis =="("){
             //argumentos -> (lista_declaraciones)
-        
             emparejar("(");
             lista_declaraciones();
             emparejar(")");
-          
         }else{
-        
-            //argumentos -> empty
-        
+            //argumentos -> empty       
         }
         
+    }
+    //-------------------------------------------------------------------------------------------------------------------------------
+    //:::::::::PROCEDURES NARCISO (DAVID) :::::::::
+    private void proposiciones_optativas(){
+        if(preAnalisis.equals("id")){
+            proposicion();
+            proposiciones_optativas();
+        }else{
+            //proposiciones_optativas -> empty
+        }
+    }
+    
+    private void proposicion(){
+        if(preAnalisis.equals("id")){
+            //proposicion -> id opasig expresion |
+            emparejar("id");
+            emparejar("opasig");
+            expresion();
+        }else if(preAnalisis.equals("call")){
+            //proposicion -> call id proposicionB |
+            emparejar("call");
+            emparejar("id");
+            proposicionB();
+        }else if(preAnalisis.equals("if")){
+            //proposicion -> if condicion then proposiciones_optativas else proposiciones_optativas end if |
+            emparejar("if");
+            condicion();
+            emparejar("then");
+            proposiciones_optativas();
+            emparejar("else");
+            proposiciones_optativas();
+            emparejar("end");
+            emparejar("if");
+        }else if(preAnalisis.equals("do")){
+            //proposicion -> do while condicion proposiciones_optativas loop
+            emparejar("do");
+            emparejar("while");
+            condicion();
+            proposiciones_optativas();
+            emparejar("loop");
+        }else{
+            //Error de produccion
+            error("[proposicion] Se esperaba declaracion de proposicion (id, call, if, do, while)" + "Linea: " + cmp.be.preAnalisis.numLinea);
+        }
+    }
+    
+    private void proposicionB(){
+        if(preAnalisis.equals("(")){
+            emparejar("(");
+            lista_expresiones();
+            emparejar(")");
+        }else{
+            //proposicionB -> empty
+        }
+    }
+    
+    private void lista_expresiones(){
+        if(preAnalisis.equals("id")){
+            //lista_expresiones -> expresion lista_expresionesB | empty
+            expresion();
+            lista_expresionesB();
+        }else{
+            //lista_expresiones -> empty
+        }
+    }
+    
+    private void lista_expresionesB(){
+        if(preAnalisis.equals(",")){
+            //lista_expresionesB -> , expresion lista_expresionesB
+            emparejar(",");
+            expresion();
+            lista_expresionesB();
+        }else{
+            //lista_expresionesB -> empty
+        }
+    }
+            
+    //-----------------------------------------------------------------------------------------------------------//    
+
+    // PROCEDURES DE ALONDRA (PROCEDURES DE 16-22)
+    
+    private void condicion(){
+        if(preAnalisis.equals("id")){
+            //condicion -> expresion oprel expresion
+            expresion();
+            emparejar("oprel");
+            expresion();
+        }else{
+            //Error de produccion
+            error("[condicion] Condicional incorrecta o mal declarada " + "Linea: " + cmp.be.preAnalisis.numLinea);
+        }
+    }
+    
+    private void expresion(){
+        if(preAnalisis.equals("id")){
+            //expresion -> termino expresionB |
+            termino();
+            expresionB();
+        }else if(preAnalisis.equals("literal")){
+            //expresion -> literal
+            emparejar("literal");
+        }else{
+            //Error de produccion
+            error("[expresion] Expresion no valida " + "Literal: " + cmp.be.preAnalisis.numLinea);
+        }
+    }
+    
+    private void expresionB(){
+        if(preAnalisis.equals("opsuma")){
+            //expresionB -> opsuma termino expresionB
+            emparejar("opsuma");
+            termino();
+            expresionB();
+        }else{
+            //expresionB -> empty
+        }
+    }
+    
+    private void termino(){
+        if(preAnalisis.equals("id")){
+            //termino -> factor terminoB
+            factor();
+            terminoB();
+        }else{
+            //Error de produccion
+            error("[termino] termino incorrecto falta un factor " + "Linea: " + cmp.be.preAnalisis.numLinea);
+        }
+    }
+    
+    private void terminoB(){
+        if(preAnalisis.equals("opmult")){
+            //terminoB -> opmult factor terminoB |
+            emparejar("opmult");
+            factor();
+            terminoB();
+        }else{
+            //terminoB -> empty
+        }
+    }
+    
+    private void factor(){
+        if(preAnalisis.equals("id")){
+            //factor -> id factorB |
+            emparejar("id");
+            factorB();
+        }else if(preAnalisis.equals("num")){
+            //factor -> num |
+            emparejar("num");
+        }else if(preAnalisis.equals("num.num")){
+            //factor -> num.num |
+            emparejar("num.num");
+        }else if(preAnalisis.equals("(")){
+            //factor -> ( expresion )
+            emparejar("(");
+            expresion();
+            emparejar(")");
+        }else{
+            //Error de produccion
+            error("[factor] Factor invalido " + "Linea: " + cmp.be.preAnalisis.numLinea);
+        }
+    }
+
+    private void factorB(){
+        if(preAnalisis.equals("(")){
+            //factorB -> ( lista_expresiones ) |
+            emparejar("(");
+            lista_expresiones();
+            emparejar(")");
+        }else{
+            //factorB -> empty
+        }
     }
 //-------------------------------------------------------------------------------------------------------------------------------
     
