@@ -126,8 +126,8 @@ public class SintacticoSemantico {
             declaraciones_subprogramas();
             
         } else {
-            error("[programa] Se esperaba el inicio de un programa con 'dim', 'function', 'id' o 'end'"
-                    + " Línea: " + cmp.be.preAnalisis.numLinea);
+//            error("[programa] Se esperaba el inicio de un programa con 'dim', 'function', 'id' o 'end'"
+//                    + " Línea: " + cmp.be.preAnalisis.numLinea);
         }
     }
 
@@ -240,7 +240,7 @@ public class SintacticoSemantico {
     }
     
     private void argumentos(){
-        if(preAnalisis =="("){
+        if(preAnalisis.equals("(")){
             //argumentos -> (lista_declaraciones)
             emparejar("(");
             lista_declaraciones();
@@ -354,8 +354,6 @@ public class SintacticoSemantico {
             //Error de produccion
             error("[expresion] Expresion no valida " + "Literal: " + cmp.be.preAnalisis.numLinea);
         }
-        
-        
     }
     
     private void expresionB(){
@@ -370,7 +368,7 @@ public class SintacticoSemantico {
     }
     
     private void termino(){
-        if(preAnalisis.equals("id")){
+        if(preAnalisis.equals("id") || preAnalisis.equals("num") || preAnalisis.equals("num.num") || preAnalisis.equals("(")){
             //termino -> factor terminoB
             factor();
             terminoB();
