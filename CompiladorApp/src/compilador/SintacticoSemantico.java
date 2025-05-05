@@ -34,6 +34,7 @@ package compilador;
 
 import general.Linea_BE;
 import javax.swing.JOptionPane;
+import general.Linea_TS;
 
 public class SintacticoSemantico {
 
@@ -64,8 +65,7 @@ public class SintacticoSemantico {
         preAnalisis = cmp.be.preAnalisis.complex;
 
         // * * *   INVOCAR AQUI EL PROCEDURE DEL SIMBOLO INICIAL   * * *
-        Atributos programa = new Atributos();
-        programa(programa);
+        programa(new Atributos ());
     }
 
     //--------------------------------------------------------------------------
@@ -152,7 +152,6 @@ public class SintacticoSemantico {
                     && (proposiciones_optativas.tipo.equals(VACIO))) 
             {
                 programa.tipo = VACIO;
-
             } else {
                 programa.tipo = ERROR_TIPO;
                 cmp.me.error(Compilador.ERR_SEMANTICO,
@@ -186,8 +185,7 @@ public class SintacticoSemantico {
             if ((lista_declaraciones.tipo.equals(VACIO)&&
                     (declaraciones1.tipo.equals(VACIO)))) 
             {
-                declaraciones.tipo = VACIO;
-                
+                declaraciones.tipo = VACIO;        
             } else {
                 declaraciones.tipo = ERROR_TIPO;
                 cmp.me.error(Compilador.ERR_SEMANTICO,
@@ -202,7 +200,10 @@ public class SintacticoSemantico {
         }
     }
     
-    //✔
+    //--------------------------------!!!!!!!!!
+    //REVISAR ACCION SEMANTICA 4
+    //--------------------------------!!!!!!!!!
+    
     private void lista_declaraciones(Atributos lista_declaraciones) {
         Linea_BE id = new Linea_BE();
         Linea_BE as = new Linea_BE();
@@ -226,8 +227,22 @@ public class SintacticoSemantico {
 ///*--->Falta implementar que el id no esté declarado y agregarlo a la TS. 
 //Si está declarado se asigna ERROR_TIPO sino VACIO<---*/
 //            lista_declaraciones.aux = ERROR_TIPO;
-            //FIN ACCIÓN SEMÁNTICA 
-            
+            //FIN ACCIÓN SEMÁNTICA
+            // ACCIÓN SEMÁNTICA 4
+            int entrada = cmp.ts.buscar(id.lexema, "global"); // Buscamos por lexema y ámbito (puedes ajustar el ámbito)
+            if (entrada > 0) {
+                // Ya está declarado
+                lista_declaraciones.aux = ERROR_TIPO;
+                cmp.me.error(Compilador.ERR_SEMANTICO,
+                    "[Lista_declaraciones] Identificador '" + id.lexema + "' ya declarado. Línea: " + id.numLinea);
+            } else {
+                // No está declarado, insertamos en TS
+                Linea_TS nuevaEntrada = new Linea_TS(id.complex, id.lexema, tipo.tipo, "global"); // tipo.tipo contiene el tipo declarado
+                cmp.ts.insertar(nuevaEntrada);
+                lista_declaraciones.aux = VACIO;
+            }
+            //FIN ACCIÓN SEMÁNTICA
+
             lista_declaraciones_prima(lista_declaraciones_prima);
             
             //ACCIÓN SEMÁNTICA 5
@@ -308,12 +323,11 @@ public class SintacticoSemantico {
         
         declaracion_subprograma(declaracion_subprograma);
         declaraciones_subprogramas(declaraciones_subprogramas1);
-        
+
        }else{
            //declaraciones_subprogramas -> empty
            declaraciones_subprogramas.tipo = VACIO;
        }
-
     }
     
     private void declaracion_subprograma(Atributos declaracion_subprograma){
@@ -328,7 +342,7 @@ public class SintacticoSemantico {
         }else{
             error("[declaracion_subprograma] Funcion o Subrutina mal declarada o incorrecta " + "Linea: " + cmp.be.preAnalisis.numLinea);
         }
-  
+
  }
 
     //✔
@@ -626,6 +640,18 @@ public class SintacticoSemantico {
             emparejar("oprel");
             //SALVANDO ATRIBUTOS DE 'oprel'
             expresion(expresion);
+            
+            if(analizarSemantica){
+                //INICIO ACCION SEMANTICA
+                //cmp.ts.anadeTipo(oprel.entrada, expresion.tipo);
+                if (expresion.tipo.equals(VACIO) && expresion.tipo.equals(VACIO)){
+                    condicion.tipo = VACIO;
+                }else{
+                    condicion.tipo = ERROR_TIPO;
+                }
+                //FIN SEMANTICA
+            }
+            
         }else{
             //Error de produccion
             error("[condicion] Condicional incorrecta o mal declarada " + "Linea: " + cmp.be.preAnalisis.numLinea);
@@ -641,12 +667,29 @@ public class SintacticoSemantico {
             //expresion -> termino expresionB |
             termino(termino);
             expresionB(expresionB);
+            
+            if(analizarSemantica){
+                //INICIO ACCION SEMANTICA
+                if(termino.tipo.equals(VACIO) && expresionB.tipo.equals(VACIO)){
+                    expresion.tipo = VACIO;
+                }else{
+                    expresion.tipo = ERROR_TIPO;
+                }
+                //FIN ACCION SEMANTICA
+            }
         }else if(preAnalisis.equals("literal")){
             //expresion -> literal
             //SALVANDO ATRIBUTOS DE 'literal'
             literal = cmp.be.preAnalisis;
             emparejar("literal");
             //SALVANDO ATRIBUTOS DE 'literal'
+            
+            if(analizarSemantica){
+                //INICIO ACCION SEMANTICA
+            
+                //FIN ACCION SEMANTICA
+            }
+
         }else{
             //Error de produccion
             error("[expresion] Expresion no valida " + "Literal: " + cmp.be.preAnalisis.numLinea);
@@ -669,9 +712,22 @@ public class SintacticoSemantico {
             
             termino(termino);
             expresionB(expresionB1);
+            
+            if(analizarSemantica){
+                //ACCION SEMANTICA
+                if(termino.tipo.equals(VACIO) && expresionB1.tipo.equals(VACIO)){
+                    expresionB.tipo = VACIO;
+                }else{
+                    expresionB.tipo = ERROR_TIPO;
+                }
+            }
         }else{
             //expresionB -> empty
-            expresionB.tipo = VACIO;
+            //ACCION SEMANTICA
+            if(analizarSemantica){
+                expresionB.tipo = VACIO;
+                //FIN ACCION SEMANTICA
+            }
         }
     }
     
@@ -683,6 +739,15 @@ public class SintacticoSemantico {
             //termino -> factor terminoB
             factor(factor);
             terminoB(terminoB);
+            if(analizarSemantica){
+                //ACCION SEMANTICA
+                if(factor.tipo.equals(VACIO) && terminoB.tipo.equals(VACIO)){
+                    termino.tipo = VACIO;
+                }else{
+                    termino.tipo = ERROR_TIPO;
+                }
+            }
+            
         }else{
             //Error de produccion
             error("[termino] termino incorrecto falta un factor " + "Linea: " + cmp.be.preAnalisis.numLinea);
@@ -703,9 +768,24 @@ public class SintacticoSemantico {
             //SALVANDO ATRIBUTOS DE 'opmult'
             factor(factor);
             terminoB(terminoB1);
+            
+            if(analizarSemantica){
+                //ACCION SEMANTICA
+                if(factor.tipo.equals(VACIO) && terminoB1.equals(VACIO)){
+                    terminoB.tipo = VACIO;
+                }else{
+                    terminoB.tipo = ERROR_TIPO;
+                }
+                //FIN ACCION SEMANTICA
+            }
+      
         }else{
-            //terminoB -> empty
-            terminoB.tipo = VACIO;
+            //terminoB -> empty    
+            if(analizarSemantica){
+                //ACCION SEMANTICA
+                terminoB.tipo = VACIO;
+                //FIN ACCION SEMANTICA
+            }
         }
     }
     
@@ -749,6 +829,14 @@ public class SintacticoSemantico {
             pareCierra = cmp.be.preAnalisis;
             emparejar(")");
             //SALVANDO ATRIBUTOS DE ')'
+            
+            //ACCION SEMANTICA
+            if(analizarSemantica){
+                
+            }
+            //FIN ACCION SEMANTICA
+            
+            
         }else{
             //Error de produccion
             error("[factor] Factor invalido " + "Linea: " + cmp.be.preAnalisis.numLinea);
@@ -774,6 +862,14 @@ public class SintacticoSemantico {
             pareCierra = cmp.be.preAnalisis;
             emparejar(")");
             //SALVANDO ATRIBUTOS DE ')'
+            
+            //ACCION SEMANTICA
+            if(analizarSemantica){
+                
+            }
+            //FIN ACCION SEMANTICA
+            
+            
         }else{
             //factorB -> empty
             factorB.tipo = VACIO;
