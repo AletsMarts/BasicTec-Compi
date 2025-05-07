@@ -123,6 +123,7 @@ public class SintacticoSemantico {
     //--------------------------------------------------------------------------
     //PROCEDURES DE ALEJANDRO
     private void programa(Atributos programa) {
+        //Variables locales
         Linea_BE end = new Linea_BE();
         Atributos declaraciones = new Atributos();
         Atributos declaraciones_subprogramas = new Atributos();
@@ -141,23 +142,25 @@ public class SintacticoSemantico {
             declaraciones_subprogramas(declaraciones_subprogramas);
             proposiciones_optativas(proposiciones_optativas);
             
-            //SALVANDO ATRIBUTOS DE 'end'
+            //Salvando atributo de 'end'
             end = cmp.be.preAnalisis;
             emparejar("end");
-            //SALVANDO ATRIBUTOS DE 'end'
             
-            //ACCIÓN SEMÁNTICA 1
-            if ((declaraciones.tipo.equals(VACIO))
-                    && (declaraciones_subprogramas.tipo.equals(VACIO))
-                    && (proposiciones_optativas.tipo.equals(VACIO))) 
-            {
-                programa.tipo = VACIO;
-            } else {
-                programa.tipo = ERROR_TIPO;
-                cmp.me.error(Compilador.ERR_SEMANTICO,
-                        "[Programa] Hay errores de tipos en el programa");
+            if(analizarSemantica){
+                //Inicio acción semántica 1
+                if ((declaraciones.tipo.equals(VACIO))
+                        && (declaraciones_subprogramas.tipo.equals(VACIO))
+                        && (proposiciones_optativas.tipo.equals(VACIO))) 
+                {
+                    programa.tipo = VACIO;
+                } else {
+                    programa.tipo = ERROR_TIPO;
+                    cmp.me.error(Compilador.ERR_SEMANTICO,
+                            "[Programa] Hay errores de tipos en el programa");
+                }
+                //Fin acción semántica 1  
             }
-            //FIN ACCIÓN SEMÁNTICA
+            
         } else {
             error("[programa] Se esperaba el inicio de un programa con 'dim', 'function', 'id' o 'end'"
                     + " Línea: " + cmp.be.preAnalisis.numLinea);
@@ -167,36 +170,41 @@ public class SintacticoSemantico {
 
     //✔
     private void declaraciones(Atributos declaraciones) {
+        //Variables locales
         Linea_BE dim = new Linea_BE();
         Atributos lista_declaraciones = new Atributos();
         Atributos declaraciones1 = new Atributos();
         
         if (preAnalisis.equals("dim")) {
             //declaraciones -> dim lista_declaraciones declaraciones empty
-            //SALVANDO ATRIBUTOS DE 'dim'
+            //Salvando atributo de 'dim'
             dim = cmp.be.preAnalisis;
             emparejar("dim");
-            //SALVANDO ATRIBUTOS DE 'dim'
            
             lista_declaraciones(lista_declaraciones);
             declaraciones(declaraciones1);
             
-            //ACCIÓN SEMÁNTICA 2
-            if ((lista_declaraciones.tipo.equals(VACIO)&&
-                    (declaraciones1.tipo.equals(VACIO)))) 
-            {
-                declaraciones.tipo = VACIO;        
-            } else {
-                declaraciones.tipo = ERROR_TIPO;
-                cmp.me.error(Compilador.ERR_SEMANTICO,
-                        "[Declaraciones] La declaración tiene un error de tipo");
+            if(analizarSemantica){
+                //Inicio acción semántica 
+                if ((lista_declaraciones.tipo.equals(VACIO)&&
+                        (declaraciones1.tipo.equals(VACIO)))) 
+                {
+                    declaraciones.tipo = VACIO;        
+                } else {
+                    declaraciones.tipo = ERROR_TIPO;
+                    cmp.me.error(Compilador.ERR_SEMANTICO,
+                            "[Declaraciones] La declaración tiene un error de tipo");
+                }
+                //Fin acción semántica
             }
-            //FIN ACCIÓN SEMÁNTICA
+         
         } else {
             //declaraciones -> empty
-            //ACCIÓN SEMÁNTICA 3
-            declaraciones.tipo = VACIO;
-            //FIN ACCIÓN SEMÁNTICA
+            if(analizarSemantica){
+                //Inicio acción semántica
+                declaraciones.tipo = VACIO;
+                //Fin acción semántica
+            }     
         }
     }
     
@@ -263,49 +271,65 @@ public class SintacticoSemantico {
         }
     }
 
-    //✔
     private void lista_declaraciones_prima(Atributos lista_declaraciones_prima) {
+        //Variables locales
         Linea_BE coma = new Linea_BE();
         Atributos lista_declaraciones = new Atributos();
+        
         if (preAnalisis.equals(",")) {
             //lista_declaraciones' -> , lista_declaraciones empty
-            //SALVANDO ATRIBUTOS ','
             /*DUDA CON LA DECLARACIÓN Y POSIBLE MISMATCH*/
+            //Salvando atributo ','
             coma = cmp.be.preAnalisis;
             emparejar(",");
-            //SALVANDO ATRIBUTOS ','
             
             lista_declaraciones(lista_declaraciones);
+            
+            if(analizarSemantica){
+                //Inicio acción semántica
+                if(lista_declaraciones.tipo.equals(VACIO)){
+                    lista_declaraciones_prima.tipo = VACIO;
+                }else{
+                    lista_declaraciones_prima.tipo = ERROR_TIPO;
+                    cmp.me.error(Compilador.ERR_SEMANTICO,
+                        "[Lista_declaraciones_prima] La lista de declaraciones prima presenta un error de tipo");
+                }
+                //Fin acción semántica
+            }
+
         } else {
             //lista_declaraciones' -> empty
-            lista_declaraciones_prima.tipo = VACIO;
+            //Inicio acción semántica
+            if(analizarSemantica){
+                lista_declaraciones_prima.tipo = VACIO;
+            }
+            //Fin acción semántica
         }
     }
 
     //✔
     private void tipo(Atributos tipo) {
+        //Variables locales
         Linea_BE integer = new Linea_BE();
         Linea_BE single = new Linea_BE();
         Linea_BE string = new Linea_BE();
         
         if (preAnalisis.equals("integer")) {
             //tipo -> integer
-            //SALVANDO ATRIBUTOS DE 'integer'
+            //Salvando atributo de 'integer'
             integer = cmp.be.preAnalisis;
             emparejar("integer");
-            //SALVANDO ATRIBUTOS DE 'integer'
         } else if (preAnalisis.equals("single")) {
             //tipo -> single
-            //SALVANDO ATRIBUTOS DE 'single'
+            //Salvando atributo de 'single'
             single = cmp.be.preAnalisis;
             emparejar("single");
-            //SALVANDO ATRIBUTOS DE 'single'
+            //Salvando atributo de 'single'
         } else if (preAnalisis.equals("string")) {
             //tipo -> string
-            //SALVANDO ATRIBUTOS DE 'string'
+            //Salvando atributo de 'string'
             string = cmp.be.preAnalisis;
             emparejar("string");
-            //SALVANDO ATRIBUTOS DE 'string'
         } else {
             error("[tipo] Se esperaba un tipo de dato 'integer', 'single', 'string', etc. "
                     + " Línea: " + cmp.be.preAnalisis.numLinea);
@@ -315,6 +339,7 @@ public class SintacticoSemantico {
 //-------------------------------------------------------------------------------------------------------------------------------
 //:::::::::PROCEDURES DAMARIS :::::::::
    private void declaraciones_subprogramas(Atributos declaraciones_subprogramas){
+       //Variables locales
        Atributos declaracion_subprograma = new Atributos();
        Atributos declaraciones_subprogramas1 = new Atributos();
        
@@ -324,21 +349,63 @@ public class SintacticoSemantico {
         declaracion_subprograma(declaracion_subprograma);
         declaraciones_subprogramas(declaraciones_subprogramas1);
 
+        if(analizarSemantica){
+            //Inicio acción semántica
+            if(declaracion_subprograma.tipo.equals(VACIO) && declaraciones_subprogramas.tipo.equals(VACIO)){
+                declaraciones_subprogramas.tipo = VACIO;
+            }else{
+                declaraciones_subprogramas.tipo = ERROR_TIPO;
+                cmp.me.error(Compilador.ERR_SEMANTICO,
+                        "[Declaraciones_subprogramas] Las declaraciones de subprogramas presenta un error de tipo");
+            }     
+            //Fin acción semántica
+        }
+
        }else{
            //declaraciones_subprogramas -> empty
-           declaraciones_subprogramas.tipo = VACIO;
+           if(analizarSemantica){
+               //Inicio acción semántica
+               declaraciones_subprogramas.tipo = VACIO;
+               //Fin acción semántica
+           }
        }
     }
     
     private void declaracion_subprograma(Atributos declaracion_subprograma){
+        //Variables locales
         Atributos declaracion_funcion = new Atributos();
         Atributos declaracion_subrutina = new Atributos();
       
         if(preAnalisis.equals("function")){ //|| preAnalisis=="sub"){
             //declaracion_subprograma -> declaracion_funcion declaracion_subrutina
             declaracion_funcion(declaracion_funcion);
+            
+            if(analizarSemantica){
+                //Inicio acción semántica
+                if(declaracion_funcion.tipo.equals(VACIO)){
+                    declaracion_subprograma.tipo = VACIO;
+                }else{
+                    declaracion_subprograma.tipo = ERROR_TIPO;
+                    cmp.me.error(Compilador.ERR_SEMANTICO,
+                        "[Declaracion_subprograma] La declaracion de subprograma presenta un error de tipo");
+                }
+                //Fin acción semántica
+            }
+            
         }else if(preAnalisis.equals("sub")){
             declaracion_subrutina(declaracion_subrutina);
+            
+            if(analizarSemantica){
+                //Inicio acción semántica
+                if(declaracion_subrutina.tipo.equals(VACIO)){
+                    declaracion_subprograma.tipo = VACIO;
+                }else{
+                    declaracion_subprograma.tipo = ERROR_TIPO;
+                    cmp.me.error(Compilador.ERR_SEMANTICO,
+                        "[Declaracion_subprograma] La declaracion de subprograma presenta un error de tipo");
+                }
+                //Fin acción semántica
+            }         
         }else{
             error("[declaracion_subprograma] Funcion o Subrutina mal declarada o incorrecta " + "Linea: " + cmp.be.preAnalisis.numLinea);
         }
